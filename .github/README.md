@@ -8,3 +8,6 @@ Testing data can be downloaded here: https://cw.fel.cvut.cz/wiki/_media/courses/
 
 The program expects the data to be in the `./data/{number}/` subdirectory.
 (Anything in the data folder is excluded from the repository.)
+
+### ENVIRONMENT
+To be working it is nice practice to create either .venv or .env
