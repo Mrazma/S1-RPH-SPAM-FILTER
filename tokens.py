@@ -2,13 +2,29 @@ from collections import Counter
 import email
 from email import policy
 import re
+import hashlib
 
 metadata_to_include = ('Subject', 'From', 'Return-Path', 'Received', 'Content-Type', 'To')
+
+def tokenize(path):
+    extra = {}
+    extra["upper"] = get_upper_percentage(path)
+    extra["hash"] = get_hash(path)
+
+    return tokenize_to_counter_without_tags(path), extract_metadata_to_dict(path), extra
 
 def get_list_of_word_in_letter_body(path):
     with open(path, 'rb') as file:
         message = email.message_from_binary_file(file, policy=policy.default)
-    body = message.get_body(preferencelist=('plain', 'html')).get_content()
+    
+    # Gets body through payloud (.get_contents() would sometimes crash the program)
+    part = message.get_body(preferencelist=('plain', 'html'))
+    if part:
+        payload = part.get_payload(decode=True)
+        body = payload.decode('utf-8', errors='replace')
+    else:
+        body = ""
+
     if body is None:
         return []
     body = re.sub(r'<.*?>', '', body, flags=re.DOTALL)
@@ -54,6 +70,16 @@ def get_upper_percentage(path):
     percentage = round(total_upper/total_letters, 2)
     return percentage
 
-print(tokenize_to_counter_without_tags("testing_mail.txt"))
-print(extract_metadata_to_dict("testing_mail.txt"))
-print(get_upper_percentage("testing_mail.txt"))
+
+def get_hash(path):
+    with open(path, "rb") as file:
+        return hashlib.sha256(file.read()).hexdigest()
+
+
+if __name__ == "__main__":
+    #print(tokenize_to_counter_without_tags("testing_mail.txt"))
+    #print(extract_metadata_to_dict("testing_mail.txt"))
+    #print(get_upper_percentage("testing_mail.txt"))
+
+    print(tokenize_to_counter_without_tags("data/1/0001.bfc8d64d12b325ff385cca8d07b84288"))
+    print(tokenize_to_counter_without_tags("data/1/00002.9438920e9a55591b18e60d1ed37d992b"))
