@@ -33,7 +33,7 @@ class TrainingCorpus(Corpus):
         for fname in os.listdir(self.path):
             if fname.startswith('!'):
                 continue
-            
-            yield os.path.join(self.path,fname), self.get_class(fname)
+
+            yield os.path.join(self.path,fname), fname, self.get_class(fname)
 
     

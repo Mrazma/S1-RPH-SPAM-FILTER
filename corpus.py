@@ -19,4 +19,4 @@ class Corpus:
             if fname.startswith('!'):
                 continue
 
-            yield os.path.join(self.path,fname)
+            yield os.path.join(self.path,fname), fname
