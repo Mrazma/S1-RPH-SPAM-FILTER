@@ -28,3 +28,12 @@ class TrainingCorpus(Corpus):
     def emails(self):
         for fname, body in super().emails():
             yield fname, body, self.get_class(fname)
+
+    def emails_paths(self):
+        for fname in os.listdir(self.path):
+            if fname.startswith('!'):
+                continue
+            
+            yield os.path.join(self.path,fname), self.get_class(fname)
+
+    
